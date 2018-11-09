@@ -1,0 +1,2 @@
+Livre(La part de l autre)
+auteur(La part de l autre,Eric-Emmanuel Schmitt)

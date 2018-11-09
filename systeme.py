@@ -22,8 +22,8 @@ def lectureBase(nomFichier):
 	
 	f.close()
 	"""expression regulier regle, fait"""
-	regexp = re.compile(r'(?P<tete>\w+\([a-zA-Z]*(,[a-zA-Z]*)*\)).->.(?P<queue>\w+\([a-zA-Z]*(,[a-zA-Z]*)*\))')
-	fait = re.compile(r'(?P<fait>\w+\([a-zA-Z]*(,[a-zA-Z]*)*\))')
+	regexp = re.compile(r'(?P<tete>\w+\([\s\w]+(,[\s\w]+)*\)).->.(?P<queue>\w+\([\s\w]+(,[\s\w]+)*\)(,\w+\([\s\w]+(,[\s\w]+)*\))*);')
+	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w]+(,[\s\w]+)*)\);')
 	num = 0
 	error = ""
 	for ligne in lignes:
@@ -34,30 +34,50 @@ def lectureBase(nomFichier):
 		if tmp is not None:
 			coupe = tmp.group('queue').split(",")
 			addRegle(tmp.group('tete'),coupe)
+			#print(bcolors.UNDERLINE + str(tmp.group('tete'))+" -> "+tmp.group('queue') + bcolors.ENDC)
 		
 		else:
-			if re.match(fait,ligne) is not None:
-				addFait()
+			tmp = re.match(fait,ligne)
+			if tmp is not None:
+				variables = tmp.group('valeur').split(",")
+				addFait(tmp.group('fait'),variables)
+				#print(bcolors.UNDERLINE + str(tmp.group('fait'))+" -> "+tmp.group('valeur') + bcolors.ENDC)
 			else:
 				#print(bcolors.WARNING +" !!!!!!!!!!!! ligne non reconnue  !!!!!!!!!!!!!!!!"+ bcolors.ENDC)
 				error += "\n erreur de syntaxe: ligne "+str(num)
 	sortie = sortie + error	
 	return sortie
 
-def stringToArraylist():
-	return 
-
-def addRegle(fait , valeur):
+def addRegle(tete , queue):
 	print("Charline a toi de jouer")
 	return
 
-def addFait():
+def addFait(fait, valeur):
 	print("Charline a toi de re-jouer")
 	return
 
 
 def chainageAvant():
-	#création d'une fenetre proposant le choix profondeur/largeur
+	choixAvant = Tk()
+	choixAvant.geometry("200x65")
+	choixAvant.title("choix de chainage avant")	
+
+	def chp():
+		chainageAvantP()
+		choixAvant.destroy()
+		return
+
+	def chl():
+		chainageAvantL()
+		choixAvant.destroy()
+		return
+
+	choix = PanedWindow(choixAvant, orient=VERTICAL)
+	choix.pack(expand=N, fill=BOTH, pady=2, padx=2)
+	choix.add(Button(choix, text="Profondeur",command= chp))
+	choix.add(Button(choix, text="Largeur", command= chl))
+
+	choixAvant.mainloop()
 	return
 
 def chainageAvantP():
@@ -79,8 +99,9 @@ def chainageArriere():
 	return 
 
 def affichageConseil(liste):
+	tmp = ""
 	for element in liste:
-		tmp += "- "+element[0]+" par "+element[1]+"\n"
+		tmp += "-"+element[0]+" de "+element[1]+"\n"
 	textConseil.set(tmp)
 	return
 
@@ -116,7 +137,6 @@ def interface():
 	p = PanedWindow(fenetre, orient=HORIZONTAL)
 	p.pack(expand=N, fill=BOTH, pady=2, padx=2)
 	buttonOuvrir = Button(p,text="selectionner base", command= openBase)
-	#buttonOuvrir.pack(side=LEFT )
 	p.add(buttonOuvrir)
 
 	addBase = Button(p, text="Ajouter dans la base", command=ajoutBase)
@@ -132,7 +152,6 @@ def interface():
 	p.add(chainageArriereButton)
 
 	bouton=Button(p, text="Aurevoir", command=sys.exit)
-	#bouton.pack(side=RIGHT)
 	p.add(bouton)
 	
 	value = StringVar() 
@@ -144,7 +163,7 @@ def interface():
 	conseil.pack(fill="both", expand="yes")
 
 	textConseil = StringVar()
-	textConseil.set("- La part de l'autre")
+	textConseil.set("- La part de l'autre de Eric-Emmanuel Schmitt")
 	labelConseil = Label(conseil, textvariable= textConseil)
 	labelConseil.pack(padx=10,pady=10)
 

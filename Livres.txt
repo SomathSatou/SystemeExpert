@@ -1,2 +1,19 @@
-Livre(La part de l autre)
-auteur(La part de l autre,Eric-Emmanuel Schmitt)
+Livre(La part de l autre,Eric-Emmanuel Schmitt);
+Livre(La strategie d Ender,Orson Scott Card);
+Livre(Une seconde apres,William R Forstchen);
+Livre(L Assasin royal,Robin Hobb);
+Livre(Deux petits pas sur le sable mouillé,Anne-Dauphine Juliand);
+
+categorie(La part de l autre,Roman);
+categorie(La strategie d Ender,Science-fiction);
+categorie(Une seconde apres,Science-fiction);
+categorie(L Assasin royal,Fantastique);
+categorie(Deux petits pas sur le sable mouillé,Biographie);
+
+lu(La part de l autre);
+
+aime(Robin Hobb);
+aime(Science-fiction);
+
+Propose(titre,auteur) -> livre(titre,auteur),aime(auteur),!lu(titre);
+Propose(titre,auteur) -> livre(titre,auteur),categorie(titre,genre),aime(genre),!lu(titre),!pas(auteur);

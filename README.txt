@@ -30,16 +30,19 @@ pour générer notre base de connaissance sous format text
 pour la rendre plus accessible aux plus grand nombre, 
 ainsi 
 
-	Cause(var)->consequence(var),conséquence2(var,var2) 
+	Cause(var)->consequence(var),conséquence2(var,var2);
 
 	signifiras que si cause(var) est présent dans la 
 Base de fait alors on auras consequence(var) dans notre base
 étendu ... etc
 
-	Fait(var) 
+	Fait(var);
 
-	indique que pour la var le fait est ajouter dans la
-base de fait
+	indique que pour la variable "var" le fait est ajouter 
+dans la base de fait
+
+	le ; nous sert a reconaitre la fin d'un régle ou d'un 
+fait
 
 	3 - Un systeme transposable
 
@@ -56,3 +59,15 @@ pour que l'on puisse modifier directement du programme notre
 base de connaissance, nous n'avons pas réaliser cela jusqu'au
 bout d'ou la présence des bouton qui devais servir a ajouter 
 des fait et a sauvegarder la nouvelle base
+
+	5 - le chainage arrière 
+
+	pour interroger la base de connaissance via le 
+chainage arrière il faut remplir le champ 
+"champ de saisie pour l'ajout a la base ou l'interoger"
+	par exemple je veux savoir si le systeme me recommande
+de lire "une seconde aprés"
+
+	Propose(Une seconde apres,William R Forstchen);
+
+	Attention la casse n'est pas gerrer par notre parser.

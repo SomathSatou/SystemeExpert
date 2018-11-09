@@ -22,8 +22,8 @@ def lectureBase(nomFichier):
 	
 	f.close()
 	"""expression regulier regle, fait"""
-	regexp = re.compile(r'(?P<tete>\w+\([\s\w]+(,[\s\w]+)*\)).->.(?P<queue>\w+\([\s\w]+(,[\s\w]+)*\)(,\w+\([\s\w]+(,[\s\w]+)*\))*);')
-	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w]+(,[\s\w]+)*)\);')
+	regexp = re.compile(r'(?P<tete>\w+\([\s\w]+(,[\s\w]+)*\)).->.(?P<queue>[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\)(,[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\))*)\s*;')
+	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')
 	num = 0
 	error = ""
 	for ligne in lignes:
@@ -44,7 +44,8 @@ def lectureBase(nomFichier):
 				#print(bcolors.UNDERLINE + str(tmp.group('fait'))+" -> "+tmp.group('valeur') + bcolors.ENDC)
 			else:
 				#print(bcolors.WARNING +" !!!!!!!!!!!! ligne non reconnue  !!!!!!!!!!!!!!!!"+ bcolors.ENDC)
-				error += "\n erreur de syntaxe: ligne "+str(num)
+				if ligne!="\n":
+					error += "\n erreur de syntaxe: ligne "+str(num)
 	sortie = sortie + error	
 	return sortie
 
@@ -94,9 +95,19 @@ def chainageAvantL():
 
 def chainageArriere():
 	listeElement = []
-	#chainage arrière stocker les resultats dans listElement
+	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
+	tmp = re.match(fait,entree.get())
+	if tmp is not None:
+		#chainage arrière stocker les resultats dans listElement
+		print("ça passe")
+	else : 
+		listeElement = [["erreur de syntaxe dans la valeur interroger",entree.get()]]
 	affichageConseil(listeElement)
 	return 
+
+def checkContradiction():
+	#verifie qu'il n'y a pas de contradiction dans la base de connaissance	
+	return
 
 def affichageConseil(liste):
 	tmp = ""
@@ -121,7 +132,7 @@ def openBase():
 	return
 
 def interface():
-	global content, textConseil
+	global content, textConseil, entree
 	fenetre = Tk()
 	fenetre.geometry("800x1200")
 	fenetre.title("Quoi lire?")
@@ -155,7 +166,7 @@ def interface():
 	p.add(bouton)
 	
 	value = StringVar() 
-	value.set("champ de saisie pour l'ajout a la base")
+	value.set("champ de saisie pour l'ajout a la base ou l'interoger")
 	entree = Entry(fenetre, textvariable=value, width=300)
 	entree.pack()
 
@@ -163,7 +174,7 @@ def interface():
 	conseil.pack(fill="both", expand="yes")
 
 	textConseil = StringVar()
-	textConseil.set("- La part de l'autre de Eric-Emmanuel Schmitt")
+	textConseil.set("bientôt des livres d'exception par ici")
 	labelConseil = Label(conseil, textvariable= textConseil)
 	labelConseil.pack(padx=10,pady=10)
 

@@ -1,0 +1,7 @@
+fait(X,Y) -> chaton(X),chien(Y)
+chien(Y) -> bave(X)
+fsek,fskl,fklsf,klsd,fkls,dklfsd  sdklf,skle,fskl,fs
+charline(dieu)
+puissance(charline,5000)
+amoureux(chien,chat)
+puissance(charline ,5000) -> somme(force(1),intelliogence(4999))

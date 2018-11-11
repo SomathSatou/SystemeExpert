@@ -253,7 +253,7 @@ def interface():
 	 
 	content = StringVar()
 	content.set("selectionner une basse de données")
-	base = Label(l, textvariable=content)
+	base = Label(l, textvariable=content,height=40,justify='left')
 	base.pack(padx=10, pady=10)
 
 	p = PanedWindow(fenetre, orient=HORIZONTAL)

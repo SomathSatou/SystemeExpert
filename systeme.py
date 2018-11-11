@@ -174,10 +174,60 @@ def chainageArriere():
 	return
 
 def chainageAvantL():
-	listeElement = []
-	#chainage avant en largeur a coder stocker les resultats dans listElement
-	affichageConseil(listeElement)
-	return 
+    listeElement = []
+    #chainage avant en largeur a coder stocker les resultats dans listElement
+    fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
+    but = re.match(fait,entree.get())
+
+    traitementAvantL("truc", "bidule")
+    
+    affichageConseil(listeElement)
+    return
+
+def traitementAvantL(monBut): #valeurs est une liste de valeur(s)
+    if 
+
+    for regles,conditions in BR.items() : #pour chaque regles
+        regle = regles.split(",") #on met les conséquences sous forme de liste (avant ->)
+        print("j'ai trouvé une conséquence")
+        print(regle)
+        
+        variables = []
+        faits = []        
+
+        for groupeCondition in conditions:#pour chaque conditions (après ->)
+            indiceVariable = 0
+            for condition in groupeCondition: # on sépare les variables des conditions
+                if indiceVariable < len(regle): #si ce sont des variables on stock dans variables
+                    variables.append(condition)
+                else :
+                    faits.append(condition) #si ce sont des conditions on stock dans faits
+                indiceVariable += 1
+        print("faits a tester :")
+        print(faits)
+        test =[]
+        #il faut voir si les faits correspondent au but
+        for elements in faits :
+            for element in elements: # element ressemble a : fait(valeur)
+                liste = []
+                fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
+                monFait = re.match(fait,element)   
+                if monFait is not None :
+                    tmp = monFait.group('fait')
+                    liste.append(tmp)#on extrait le nom du fait 
+                    var = monFait.group('valeur').split()#on extrait la liste des valeurs
+
+
+
+
+
+
+        
+
+    return 
+
+
+
 
 def chainageAvantP():
 	listeElement = []
@@ -203,8 +253,8 @@ def checkContradiction(pile):
 	#verifie qu'il n'y a pas de contradiction dans la base de connaissance	
 	return True
 
-def checkContrainte(contrainte): #retourne vrai si fait(valeur) est dans la base de faits
-	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')	
+def checkContrainte(contrainte): #retourne vrai si contrainte de la forme : fait(valeur) est dans la base de faits
+	fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')	
 	val = re.match(fait,contrainte)
 	if val is not None:
 		valeur = val.group('valeur')

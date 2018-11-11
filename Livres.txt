@@ -11,8 +11,8 @@ categorie(L Assasin royal,Fantastique);
 categorie(Deux petits pas sur le sable mouillé,Biographie);
 
 lu(La part de l autre);
+lu(La strategie d Ender);
 
-aime(Robin Hobb);
 aime(Science-fiction);
 !lu(L Assasin royal);
 
@@ -22,5 +22,7 @@ Propose(titre,auteur)&Propose(titre2,auteur) -> aime(auteur)&livre(titre,auteur)
 
 aime(var) -> !pas(var);
 pas(var) -> !aime(var);
+
+aime(Orson Scott Card) -> lu(La strategie d Ender);
 
 

@@ -174,26 +174,24 @@ def chainageArriere():
 	return
 
 def chainageAvantL():
-    listeElement = []
-    #chainage avant en largeur a coder stocker les resultats dans listElement
-    fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
+    fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
     but = re.match(fait,entree.get())
-    #if but is not None:
-        #traitementAvantL(but)
-    traitementAvantL("aime('moi')")
     
-    affichageConseil(listeElement)
+    if but is not None:     
+        maChaine = entree.get()[:-1] #pour enlever le ;
+        affichageConseil(traitementAvantL(maChaine))
+    else :
+        affichageConseil(-1)
     return
 
 def traitementAvantL(monBut): #mon but est de la forme fait(valeur, autre)
-    if checkContrainte(monBut) :
-        return True
+    print(monBut)
+    if checkContrainte(monBut) : #si le but est dans les faits alors il est atteind
+        return 2
     else :
-
+        regleTrouver = False # variable pour savoir si on trouve encore une règle
         for regles,conditions in BR.items() : #pour chaque regles
             regle = regles.split(",") #on met les conséquences sous forme de liste (avant ->)
-            print("j'ai trouvé une conséquence")
-            print(regle)
         
             variables = []
             faits = []        
@@ -206,29 +204,30 @@ def traitementAvantL(monBut): #mon but est de la forme fait(valeur, autre)
                     else :
                         faits.append(condition) #si ce sont des conditions on stock dans faits
                     indiceVariable += 1
-            print("faits a tester :")
-            print(faits)
-            test =[]
+
+
             #il faut voir si les faits correspondent au but
-            for elements in faits :
+            for elements in faits : #pour chaque règle qui amène a cette conséquence
+                valider = True
                 for element in elements: # element ressemble a : fait(valeur)
-                    liste = []
+                    #on regarde si chaque condition, elle est vraie dans la base de faits
+
                     fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
                     monFait = re.match(fait,element)   
                     if monFait is not None :
-                        tmp = monFait.group('fait')
-                        liste.append(tmp)#on extrait le nom du fait 
-                        var = monFait.group('valeur').split()#on extrait la liste des valeurs
-
-
-
-
-
-
-        
-
-    return 
-
+                        fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
+                        monFait = re.match(fait,element)   
+                        if not(checkContrainte(element)): #s'il n'y est pas on invalide cette règle
+                            valider = False
+            if valider == True : # si on a passer toutes les contraintes et qu'elles sont toutes dans la base de faits 
+                regleTrouver = True
+                indice = 0 
+                for nouveauFait in regle: #pour tout les faits on les ajoutes avec leur valeur
+                    addfait(nouveauFait,variables[indice])
+                    indice += 1
+        if regleTrouver == False :
+            return 0
+    traitementAvantL(monBut)
 
 
 

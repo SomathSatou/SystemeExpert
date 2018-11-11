@@ -14,11 +14,12 @@ lu(La part de l autre);
 
 aime(Robin Hobb);
 aime(Science-fiction);
+!lu(L Assasin royal);
 
-Propose(titre,auteur) -> livre(titre,auteur)&aime(auteur)&!lu(titre);
-Propose(titre,auteur) -> livre(titre,auteur)&categorie(titre,genre)&aime(genre)&!lu(titre)&!pas(auteur);
-Propose(titre,auteur) -> livre(titre,auteur);
-Propose(titre,auteur)&propose(titre2,auteur) -> aime(auteur)&livre(titre,auteur)&livre(titre2,auteur)&!lu(titre)&!lu(titre2);
+Propose(titre,auteur) -> Livre(titre,auteur)&aime(auteur)&!lu(titre);
+Propose(titre,auteur) -> Livre(titre,auteur)&categorie(titre,genre)&aime(genre)&!lu(titre)&!pas(auteur);
+Propose(titre,auteur) -> Livre(titre,auteur);
+Propose(titre,auteur)&Propose(titre2,auteur) -> aime(auteur)&livre(titre,auteur)&livre(titre2,auteur)&!lu(titre)&!lu(titre2);
 
 aime(var) -> !pas(var);
 pas(var) -> !aime(var);

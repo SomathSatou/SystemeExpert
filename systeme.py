@@ -27,7 +27,7 @@ def lectureBase(nomFichier):
 	f.close()
 	"""expression regulier regle, fait"""
 	regexp = re.compile(r'(?P<tete>\w+\([\s\w]+(,[\s\w]+)*\)(&[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\))*).->.(?P<queue>[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\)(&[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\))*)\s*;')
-	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')
+	fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')
 	num = 0
 	error = ""
 	for ligne in lignes:
@@ -52,10 +52,10 @@ def lectureBase(nomFichier):
 				if ligne!="\n":
 					error += "\n erreur de syntaxe: ligne "+str(num)
 	sortie = sortie + error	
-	print("\nBase de regles")
-	print(BR)
-	print("\nBase de Faits")
-	print(BF)
+	#print("\nBase de regles")
+	#print(BR)
+	#print("\nBase de Faits")
+	#print(BF)
 	return sortie
 
 
@@ -65,8 +65,6 @@ def addRegle(tete , queue):
 	variable = []
 	coupTete= tete.split("&")
 	for elem in coupTete:
-		print(cle)
-		print(elem)
 		regle = fait.match(str(elem))
 		if regle is not None:
 			cleTmp = regle.group('fait')
@@ -117,9 +115,9 @@ def chainageAvant():
 	choixAvant.mainloop()
 	return
 
-def chainageAvantP():
+def chainageArriere():
 	solution = 0
-	contrainte = []
+	contraintes = []
 	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
 	but = re.match(fait,entree.get())
 	if but is not None:
@@ -127,22 +125,43 @@ def chainageAvantP():
 		#chainage avantP stocker les resultats dans listElement
 		if but.group('fait') in BF:
 			i = 0
+			faitTmp = but.group('fait')
 			for test in BF[but.group('fait')]:
 				if buts[0] == BF[but.group('fait')][i][0]:
 					solution = 1
 					#listeElement.append([fait,"est dans la base de fait"])
 				i=i+1
 		for regles in BR:
-			if regles == but.group('fait'):
-				contrainte.append(BR[regles])
-		for idk in contrainte:
+			if regles == but.group('fait'):	
+				size = len(BR[regles])
+				for regle in BR[regles]:
+					for elt in regle[-1]:
+						j = 0
+						while regle[j] != regle[-1]:
+							k=0
+							while k < len(regle[j]):
+								tmpRegle = []
+								for remplacer in regle[-1]:
+									tmpRegle.append(remplacer.replace(regle[j][k],buts[k]))
+									regle[-1] = tmpRegle
+								k+=1
+							j+=1
+					contraintes.append(tmpRegle)
+		for contrainte in contraintes:
 #			for element
-			while not checkContradiction(idk):
-				if checkContrainte(idk[0]): 
-					idk.remove(0)
-				elif idk[0] in BR:
-					idk[0] = appliquerRegles(idk[0])
-			if idk == []:					
+			l=0
+			sup = 0
+			while checkContradiction(contrainte) and l<len(contrainte):
+				print(l)
+				print(contrainte[l-sup])
+				if checkContrainte(contrainte[l-sup]): 
+					del contrainte[l-sup]
+					sup+=1
+				elif contrainte[l-sup] in BR:
+					contrainte[l-sup] = appliquerRegles(contrainte[l-sup])
+				l+=1
+			print(contrainte)
+			if contrainte == []:					
 				solution = 2				
 				#listeElement.append([fait,"est une solution ateigniable"])
 				 
@@ -160,7 +179,7 @@ def chainageAvantL():
 	affichageConseil(listeElement)
 	return 
 
-def chainageArriere():
+def chainageAvantP():
 	listeElement = []
 	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
 	but = re.match(fait,entree.get())
@@ -176,13 +195,24 @@ def checkContradiction(pile):
 	for elem in pile:
 		if elem[0][0] == "!":
 			if elem[0] in BF:
-				return false;
+				return False;
 		else:
 			tmp = "!"+elem[0]
 			if tmp in BF:
-				return false;
+				return False;
 	#verifie qu'il n'y a pas de contradiction dans la base de connaissance	
-	return true
+	return True
+
+def checkContrainte(contrainte): #retourne vrai si fait(valeur) est dans la base de faits
+	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')	
+	val = re.match(fait,contrainte)
+	if val is not None:
+		valeur = val.group('valeur')
+		valeur = valeur.split(',')
+		if val.group('fait') in BF : #si le fait existe
+			if valeur in BF[val.group('fait')] : #si la valeur est dans la base de faits
+				return True
+	return False
 
 def affichageConseil(solution):
 	tmp = ""

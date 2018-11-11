@@ -60,7 +60,7 @@ def lectureBase(nomFichier):
 
 
 def addRegle(tete , queue):
-	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
+	fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
 	cle = ""
 	variable = []
 	coupTete= tete.split("&")
@@ -118,7 +118,7 @@ def chainageAvant():
 def chainageArriere():
 	solution = 0
 	contraintes = []
-	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
+	fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
 	but = re.match(fait,entree.get())
 	if but is not None:
 		buts = but.group('valeur').split(",")

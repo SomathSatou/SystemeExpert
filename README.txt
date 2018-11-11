@@ -3,71 +3,71 @@
 ############################################################
 
 	Pour lancer ce programmme pas besoin de lui donner 
-des d'argument, la commande suivant suffit :
+d'argument, la commande suivante suffit :
 
 	python3 systeme.py
 
-	Vous devrez alors choisir une base de connaissance
-a l'aide du boutton "selectionner base" cela généreras 
-l'affichage de la base de donnés séléctionné, ensuite 
-pout faire fonctionner le programme il faudras choisir 
-"chainage avant" ou "chainage arrière" qui généras ensuite 
-les resutlats dans la partie inférieur du programmme.
+	Vous devrez alors choisir une base de connaissances
+à l'aide du bouton "sélectionner base". Cela génèrera 
+l'affichage de la base de données séléctionnée. Ensuite 
+pour faire fonctionner le programme il faudra choisir 
+"chainage avant" ou "chainage arrière" ce qui génèrera
+les résultats dans la partie inférieure du programmme.
 
 	1 - Objectifs 
 	
-	nous souhaitions rélisée un Systeme expert capable 
-de recommandé des livres a lire en fonction d'un base de 
-donnés, ici réduite a quelque exemple par faute de temps
-mais nous avions imaginé ajouté un procédure qui permet 
-de generer automatiquement nos base de connaissance à 
-partir de base de données exterieur. 
+	Nous souhaitions réaliser un système expert capable 
+de recommander des livres à lire en fonction d'une base de 
+données, ici réduite à quelques exemples par faute de temps
+mais nous avions imaginé ajouter une procédure qui permet 
+de générer automatiquement nos bases de connaissances à 
+partir de bases de données extérieures. 
 
 	2 - Syntaxe 
 
-	nous nous sommes inspiré de la syntaxe de prolog
-pour générer notre base de connaissance sous format text
-pour la rendre plus accessible aux plus grand nombre, 
-ainsi 
+	Nous nous sommes inspirés de la syntaxe de prolog
+pour générer notre base de connaissances sous format text
+pour la rendre plus accessible au plus grand nombre. 
+Ainsi :
 
-	Cause(var)->consequence(var),conséquence2(var,var2);
+	Cause(var)->consequence(var),consequence2(var,var2);
 
-	signifiras que si cause(var) est présent dans la 
-Base de fait alors on auras consequence(var) dans notre base
-étendu ... etc
+	signifiera que si cause(var) est présent dans la 
+base de faits alors on aura consequence(var) dans notre base
+étendue, etc.
 
 	Fait(var);
 
-	indique que pour la variable "var" le fait est ajouter 
-dans la base de fait
+	indique que pour la variable "var" le fait est ajouté
+dans la base de faits
 
-	le ; nous sert a reconaitre la fin d'un régle ou d'un 
+	le ; nous sert à reconnaitre la fin d'une règle ou d'un 
 fait
 
-	3 - Un systeme transposable
+	3 - Un système transposable
 
-	En principe notre systeme s'adapte a toute base de 
-données culturel, films, musée, etc ... en modifiant le 
-fait que notre systeme regarde en priorité "lu", vue que les
-fait qui aident a la décision "aime()" ou "pas()" reste les 
-mêmes
+	En principe notre système s'adapte à toute base de 
+données culturelle (films, musées, etc.) en modifiant le 
+fait que notre système regarde en priorité "lu", vu que les
+faits qui aident à la décision "aime()" ou "pas()" restent les 
+mêmes.
 
 	4 - Interactif 
 
-	Nous avons imaginer notre systeme de façons interactifs
-pour que l'on puisse modifier directement du programme notre 
-base de connaissance, nous n'avons pas réaliser cela jusqu'au
-bout d'ou la présence des bouton qui devais servir a ajouter 
-des fait et a sauvegarder la nouvelle base
+	Nous avons imaginé notre système de façon interactive
+pour que l'on puisse modifier directement depuis le programme 
+notre base de connaissances. Nous n'avons pas réalisé cela 
+jusqu'au bout, d'où la présence des boutons qui devaient 
+servir à ajouter des faits et à sauvegarder la nouvelle base.
 
-	5 - le chainage arrière 
+	5 - Le chainage arrière 
 
-	pour interroger la base de connaissance via le 
+	Pour interroger la base de connaissances via le 
 chainage arrière il faut remplir le champ 
-"champ de saisie pour l'ajout a la base ou l'interoger"
-	par exemple je veux savoir si le systeme me recommande
-de lire "une seconde aprés"
+"champ de saisie pour l'ajout à la base ou l'interroger"
+	par exemple je veux savoir si le système me recommande
+de lire "une seconde après"
 
 	Propose(Une seconde apres,William R Forstchen);
 
-	Attention la casse n'est pas gerrer par notre parser.
+	Attention la casse n'est pas gérée par notre parser.

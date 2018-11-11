@@ -26,7 +26,7 @@ def lectureBase(nomFichier):
 	
 	f.close()
 	"""expression regulier regle, fait"""
-	regexp = re.compile(r'(?P<tete>\w+\([\s\w]+(,[\s\w]+)*\)).->.(?P<queue>[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\)(,[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\))*)\s*;')
+	regexp = re.compile(r'(?P<tete>\w+\([\s\w]+(,[\s\w]+)*\)(&[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\))*).->.(?P<queue>[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\)(&[!\w]\w*\([\s\w\-]+(,[\s\w\-]+)*\))*)\s*;')
 	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')
 	num = 0
 	error = ""
@@ -36,8 +36,9 @@ def lectureBase(nomFichier):
 		#print(ligne)
 		tmp = regexp.match(ligne)
 		if tmp is not None:
-			coupe = tmp.group('queue').split(",")
-			addRegle(tmp.group('tete'),coupe)
+			coupe = tmp.group('queue').split("&")
+			coupetete = tmp.group('tete')
+			addRegle(coupetete,coupe)
 			#print(bcolors.UNDERLINE + str(tmp.group('tete'))+" -> "+tmp.group('queue') + bcolors.ENDC)
 		
 		else:
@@ -51,14 +52,36 @@ def lectureBase(nomFichier):
 				if ligne!="\n":
 					error += "\n erreur de syntaxe: ligne "+str(num)
 	sortie = sortie + error	
+	print("\nBase de regles")
+	print(BR)
+	print("\nBase de Faits")
+	print(BF)
 	return sortie
 
 
 def addRegle(tete , queue):
-	if tete in BR:
-		BR[tete].append(queue)
+	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
+	cle = ""
+	variable = []
+	coupTete= tete.split("&")
+	for elem in coupTete:
+		print(cle)
+		print(elem)
+		regle = fait.match(str(elem))
+		if regle is not None:
+			cleTmp = regle.group('fait')
+			if cle != "" :
+				cle = cle+","+cleTmp
+			else:
+				cle= cleTmp
+			variableTmp = regle.group('valeur').split(",")
+			variable.append(variableTmp)
+	
+	variable.append(queue)
+	if cle in BR:
+		BR[cle].append(variable)
 	else :
-		BR[tete] = [queue]
+		BR[cle] = [variable]
 	return
 
 
@@ -95,7 +118,7 @@ def chainageAvant():
 	return
 
 def chainageAvantP():
-	listeElement = []
+	solution = 0
 	contrainte = []
 	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
 	but = re.match(fait,entree.get())
@@ -106,17 +129,29 @@ def chainageAvantP():
 			i = 0
 			for test in BF[but.group('fait')]:
 				if buts[0] == BF[but.group('fait')][i][0]:
-					if len(BF[but.group('fait')][i]) >1:
-						listeElement.append([buts[0],buts[1]])
-					else:
-						listeElement.append([buts[0],""])
+					solution = 1
+					#listeElement.append([fait,"est dans la base de fait"])
 				i=i+1
-		if regles in BR:
-			contrainte = 
+		for regles in BR:
+			if regles == but.group('fait'):
+				contrainte.append(BR[regles])
+		for idk in contrainte:
+#			for element
+			while not checkContradiction(idk):
+				if checkContrainte(idk[0]): 
+					idk.remove(0)
+				elif idk[0] in BR:
+					idk[0] = appliquerRegles(idk[0])
+			if idk == []:					
+				solution = 2				
+				#listeElement.append([fait,"est une solution ateigniable"])
+				 
+			 
 			
 	else : 
-		listeElement = [["erreur de syntaxe dans la valeur interroger",entree.get()]]
-	affichageConseil(listeElement)
+		solution = -1
+		#listeElement = [["erreur de syntaxe dans la valeur interroger",entree.get()]]
+	affichageConseil(solution)
 	return
 
 def chainageAvantL():
@@ -137,16 +172,28 @@ def chainageArriere():
 	affichageConseil(listeElement)
 	return 
 
-def checkContradiction():
+def checkContradiction(pile):
+	for elem in pile:
+		if elem[0][0] == "!":
+			if elem[0] in BF:
+				return false;
+		else:
+			tmp = "!"+elem[0]
+			if tmp in BF:
+				return false;
 	#verifie qu'il n'y a pas de contradiction dans la base de connaissance	
-	return
+	return true
 
-def affichageConseil(liste):
+def affichageConseil(solution):
 	tmp = ""
-	for element in liste:
-		tmp += "-"+element[0]+","+element[1]+"\n"
-	if len(liste) == 0:
-		tmp += "pas de solution dans la base de connaisance"
+	if solution == -1:
+		tmp = "erreur de syntaxe"
+	elif solution == 0:
+		tmp = "le fait n'as pas solution de solutio dans la base de connaissance"
+	elif solution == 1:
+		tmp = "le fait est bien dans la base de fait"
+	elif solution == 2:
+		tmp = "le fait est atteignable d'aprés la base de connaissances"
 	textConseil.set(tmp)
 	return
 
@@ -218,3 +265,4 @@ def interface():
 # ------------ main -----------------
 
 interface()
+

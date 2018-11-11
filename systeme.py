@@ -178,44 +178,47 @@ def chainageAvantL():
     #chainage avant en largeur a coder stocker les resultats dans listElement
     fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
     but = re.match(fait,entree.get())
-
-    traitementAvantL("truc", "bidule")
+    #if but is not None:
+        #traitementAvantL(but)
+    traitementAvantL("aime('moi')")
     
     affichageConseil(listeElement)
     return
 
-def traitementAvantL(monBut): #valeurs est une liste de valeur(s)
-    if 
+def traitementAvantL(monBut): #mon but est de la forme fait(valeur, autre)
+    if checkContrainte(monBut) :
+        return True
+    else :
 
-    for regles,conditions in BR.items() : #pour chaque regles
-        regle = regles.split(",") #on met les conséquences sous forme de liste (avant ->)
-        print("j'ai trouvé une conséquence")
-        print(regle)
+        for regles,conditions in BR.items() : #pour chaque regles
+            regle = regles.split(",") #on met les conséquences sous forme de liste (avant ->)
+            print("j'ai trouvé une conséquence")
+            print(regle)
         
-        variables = []
-        faits = []        
+            variables = []
+            faits = []        
 
-        for groupeCondition in conditions:#pour chaque conditions (après ->)
-            indiceVariable = 0
-            for condition in groupeCondition: # on sépare les variables des conditions
-                if indiceVariable < len(regle): #si ce sont des variables on stock dans variables
-                    variables.append(condition)
-                else :
-                    faits.append(condition) #si ce sont des conditions on stock dans faits
-                indiceVariable += 1
-        print("faits a tester :")
-        print(faits)
-        test =[]
-        #il faut voir si les faits correspondent au but
-        for elements in faits :
-            for element in elements: # element ressemble a : fait(valeur)
-                liste = []
-                fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
-                monFait = re.match(fait,element)   
-                if monFait is not None :
-                    tmp = monFait.group('fait')
-                    liste.append(tmp)#on extrait le nom du fait 
-                    var = monFait.group('valeur').split()#on extrait la liste des valeurs
+            for groupeCondition in conditions:#pour chaque conditions (après ->)
+                indiceVariable = 0
+                for condition in groupeCondition: # on sépare les variables des conditions
+                    if indiceVariable < len(regle): #si ce sont des variables on stock dans variables
+                        variables.append(condition)
+                    else :
+                        faits.append(condition) #si ce sont des conditions on stock dans faits
+                    indiceVariable += 1
+            print("faits a tester :")
+            print(faits)
+            test =[]
+            #il faut voir si les faits correspondent au but
+            for elements in faits :
+                for element in elements: # element ressemble a : fait(valeur)
+                    liste = []
+                    fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
+                    monFait = re.match(fait,element)   
+                    if monFait is not None :
+                        tmp = monFait.group('fait')
+                        liste.append(tmp)#on extrait le nom du fait 
+                        var = monFait.group('valeur').split()#on extrait la liste des valeurs
 
 
 
@@ -237,7 +240,7 @@ def chainageAvantP():
 		#chainage arrière stocker les resultats dans listElement
 		print("ça passe")
 	else : 
-		listeElement = [["erreur de syntaxe dans la valeur interroger",entree.get()]]
+		listeElement = [["erreur de syntaxe dans la valeur interrogée",entree.get()]]
 	affichageConseil(listeElement)
 	return 
 
@@ -269,11 +272,11 @@ def affichageConseil(solution):
 	if solution == -1:
 		tmp = "erreur de syntaxe"
 	elif solution == 0:
-		tmp = "le fait n'as pas solution de solutio dans la base de connaissance"
+		tmp = "le fait n'as pas de solution dans la base de connaissances"
 	elif solution == 1:
-		tmp = "le fait est bien dans la base de fait"
+		tmp = "le fait est bien dans la base de faits"
 	elif solution == 2:
-		tmp = "le fait est atteignable d'aprés la base de connaissances"
+		tmp = "le fait est atteignable d'après la base de connaissances"
 	textConseil.set(tmp)
 	return
 
@@ -298,17 +301,17 @@ def interface():
 	fenetre.geometry("800x1200")
 	fenetre.title("Quoi lire?")
 
-	l = LabelFrame(fenetre, text="base de conaissance", padx=20, pady=20)
+	l = LabelFrame(fenetre, text="base de connaissances", padx=20, pady=20)
 	l.pack(fill="both", expand="yes")
 	 
 	content = StringVar()
-	content.set("selectionner une basse de données")
+	content.set("sélectionner une base de données")
 	base = Label(l, textvariable=content,height=40,justify='left')
 	base.pack(padx=10, pady=10)
 
 	p = PanedWindow(fenetre, orient=HORIZONTAL)
 	p.pack(expand=N, fill=BOTH, pady=2, padx=2)
-	buttonOuvrir = Button(p,text="selectionner base", command= openBase)
+	buttonOuvrir = Button(p,text="sélectionner base", command= openBase)
 	p.add(buttonOuvrir)
 
 	addBase = Button(p, text="Ajouter dans la base", command=ajoutBase)
@@ -327,7 +330,7 @@ def interface():
 	p.add(bouton)
 
 	value = StringVar() 
-	value.set("champ de saisie pour l'ajout a la base ou l'interoger")
+	value.set("champ de saisie pour l'ajout dans la base ou l'interroger")
 	entree = Entry(fenetre, textvariable=value, width=300)
 	entree.pack()
 

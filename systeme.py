@@ -3,6 +3,10 @@ import sys
 from tkinter import * 
 from tkinter.filedialog import *
 
+BF = {} 
+
+BR = {}
+
 class bcolors:
 	HEADER = '\033[95m'
 	OKBLUE = '\033[94m'
@@ -49,12 +53,21 @@ def lectureBase(nomFichier):
 	sortie = sortie + error	
 	return sortie
 
+
 def addRegle(tete , queue):
-	print("Charline a toi de jouer")
+	if tete in BR:
+		BR[tete].append(queue)
+	else :
+		BR[tete] = [queue]
 	return
 
-def addFait(fait, valeur):
-	print("Charline a toi de re-jouer")
+
+def addFait(fait, valeur): #voir pour lu il fait une liste de liste avec un seul élément à l'intérieur ( une simple liste avec une string aurait suffit mais je pense que c'est normal)
+	 # ajoute un fait dans la base de données ex (chat, Jahwi)
+	if fait in BF:    # si le fait n'est pas encore dans la base on créée la liste avec le premier élément
+		BF[fait].append(valeur)
+	else :             # sinon on ajoute l'élément à la liste d'élément déjà existante
+		BF[fait] = [valeur]
 	return
 
 
@@ -83,7 +96,26 @@ def chainageAvant():
 
 def chainageAvantP():
 	listeElement = []
-	#chainage avant en profondeur a coder stocker les resultats dans listElement
+	contrainte = []
+	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
+	but = re.match(fait,entree.get())
+	if but is not None:
+		buts = but.group('valeur').split(",")
+		#chainage avantP stocker les resultats dans listElement
+		if but.group('fait') in BF:
+			i = 0
+			for test in BF[but.group('fait')]:
+				if buts[0] == BF[but.group('fait')][i][0]:
+					if len(BF[but.group('fait')][i]) >1:
+						listeElement.append([buts[0],buts[1]])
+					else:
+						listeElement.append([buts[0],""])
+				i=i+1
+		if regles in BR:
+			contrainte = 
+			
+	else : 
+		listeElement = [["erreur de syntaxe dans la valeur interroger",entree.get()]]
 	affichageConseil(listeElement)
 	return
 
@@ -96,8 +128,8 @@ def chainageAvantL():
 def chainageArriere():
 	listeElement = []
 	fait = re.compile(r'(?P<fait>\w+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
-	tmp = re.match(fait,entree.get())
-	if tmp is not None:
+	but = re.match(fait,entree.get())
+	if but is not None:
 		#chainage arrière stocker les resultats dans listElement
 		print("ça passe")
 	else : 
@@ -112,7 +144,9 @@ def checkContradiction():
 def affichageConseil(liste):
 	tmp = ""
 	for element in liste:
-		tmp += "-"+element[0]+" de "+element[1]+"\n"
+		tmp += "-"+element[0]+","+element[1]+"\n"
+	if len(liste) == 0:
+		tmp += "pas de solution dans la base de connaisance"
 	textConseil.set(tmp)
 	return
 
@@ -164,7 +198,7 @@ def interface():
 
 	bouton=Button(p, text="Aurevoir", command=sys.exit)
 	p.add(bouton)
-	
+
 	value = StringVar() 
 	value.set("champ de saisie pour l'ajout a la base ou l'interoger")
 	entree = Entry(fenetre, textvariable=value, width=300)
@@ -183,6 +217,4 @@ def interface():
 
 # ------------ main -----------------
 
-#lectureBase(sys.argv[1])
 interface()
-print("au travail !!!")

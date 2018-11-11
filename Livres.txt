@@ -2,7 +2,7 @@ Livre(La part de l autre,Eric-Emmanuel Schmitt);
 Livre(La strategie d Ender,Orson Scott Card);
 Livre(Une seconde apres,William R Forstchen);
 Livre(L Assasin royal,Robin Hobb);
-Livre(Deux petits pas sur le sable mouillé,Anne-Dauphine Juliand);
+Livre(Deux petits pas sur le sable mouille,Anne-Dauphine Juliand);
 
 categorie(La part de l autre,Roman);
 categorie(La strategie d Ender,Science-fiction);

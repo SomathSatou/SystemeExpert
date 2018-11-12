@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter.filedialog import *
 
 BF = {} 
-
+BC = BF
 BR = {}
 
 class bcolors:
@@ -85,9 +85,9 @@ def addRegle(tete , queue):
 
 def addFait(fait, valeur): #voir pour lu il fait une liste de liste avec un seul élément à l'intérieur ( une simple liste avec une string aurait suffit mais je pense que c'est normal)
 	 # ajoute un fait dans la base de données ex (chat, Jahwi)
-	if fait in BF:    # si le fait n'est pas encore dans la base on créée la liste avec le premier élément
+	if fait in BF:    
 		BF[fait].append(valeur)
-	else :             # sinon on ajoute l'élément à la liste d'élément déjà existante
+	else :            
 		BF[fait] = [valeur]
 	return
 
@@ -173,62 +173,93 @@ def chainageArriere():
 	affichageConseil(solution)
 	return
 
+#test avec aime(Orson Scott Card)
 def chainageAvantL():
     fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*;')	
     but = re.match(fait,entree.get())
-    
+
+    # on definis une base de connaissances pour ne pas affecter notre base de fait statique qu'on réinitialise a la fin
     if but is not None:     
         maChaine = entree.get()[:-1] #pour enlever le ;
         affichageConseil(traitementAvantL(maChaine))
     else :
         affichageConseil(-1)
+
+    BF = BC # on remet la base de fait dans le meme état qu'au début
     return
 
 def traitementAvantL(monBut): #mon but est de la forme fait(valeur, autre)
+
+    regleTrouver = False # variable pour savoir si on trouve encore une règle
     print(monBut)
     if checkContrainte(monBut) : #si le but est dans les faits alors il est atteind
+       # print("but atteind dans la base de fait")
         return 2
     else :
-        regleTrouver = False # variable pour savoir si on trouve encore une règle
+
         for regles,conditions in BR.items() : #pour chaque regles
-            regle = regles.split(",") #on met les conséquences sous forme de liste (avant ->)
-        
+            #print("pour chaque règle")
+            regle = regles.split(",") #on met les conséquences sous forme de liste (avant ->)        
             variables = []
             faits = []        
-
             for groupeCondition in conditions:#pour chaque conditions (après ->)
+                #print("pour chaque conditions")
                 indiceVariable = 0
                 for condition in groupeCondition: # on sépare les variables des conditions
                     if indiceVariable < len(regle): #si ce sont des variables on stock dans variables
                         variables.append(condition)
+                        #print("liste de variable")
                     else :
                         faits.append(condition) #si ce sont des conditions on stock dans faits
+                        #print("liste de faits a vérifier")
                     indiceVariable += 1
-
-
             #il faut voir si les faits correspondent au but
             for elements in faits : #pour chaque règle qui amène a cette conséquence
+                #print("cet ensemble de faits a vérifier")
+                print(elements)
                 valider = True
                 for element in elements: # element ressemble a : fait(valeur)
                     #on regarde si chaque condition, elle est vraie dans la base de faits
-
-                    fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
-                    monFait = re.match(fait,element)   
-                    if monFait is not None :
+                    if(valider == True) :
                         fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
                         monFait = re.match(fait,element)   
-                        if not(checkContrainte(element)): #s'il n'y est pas on invalide cette règle
-                            valider = False
-            if valider == True : # si on a passer toutes les contraintes et qu'elles sont toutes dans la base de faits 
-                regleTrouver = True
-                indice = 0 
-                for nouveauFait in regle: #pour tout les faits on les ajoutes avec leur valeur
-                    addfait(nouveauFait,variables[indice])
-                    indice += 1
-        if regleTrouver == False :
-            return 0
-    traitementAvantL(monBut)
+                        if monFait is not None :
+                            fait = re.compile(r'(?P<fait>[\!\w]+)\((?P<valeur>[\s\w\-]+(,[\s\w\-]+)*)\)\s*')
+                            monFait = re.match(fait,element)   
+                            if not(checkContrainte(element)): #s'il n'y est pas on invalide cette règle
+                                #print("pas dans la base")
+                                valider = False
+                            else :
+                                #print("dans la base")
+           
+                if valider == True : # si on a passer toutes les contraintes et qu'elles sont toutes dans la base de faits 
+                    #print("cette règle fonctionne")
+                    # il faut vérifier que le fait n'est pas déjà dans la base
+                    indice = 1 #indice pour retrouver les variables
+                    for nouveauFait in regle:
+                        if nouveauFait in BF :
+                            if variables[indice] in BF[nouveauFait] :
+                            #si le fait existe deja dans la base
+                                #print("le fait existe déjà")
+                                #print(nouveauFait)
+                                #print(variables[indice])
+                            else : # pour ce fait la valeur n'existe pas encore dans la base
+                                regleTrouver = True
+                                addFait(nouveauFait,variables[indice])
+                                #print("on ajoute le fait" + nouveauFait) 
+                                #print(variables[indice]) 
 
+                        else : # le fait n'xiste pas encore dans la base
+                            regleTrouver = True
+                            addFait(nouveauFait,variables[indice])
+                            #print("on ajoute le fait" + nouveauFait)
+                            #print(variables[indice] ) 
+                        indice += 1
+    if regleTrouver == False :
+        return 0
+    else :
+        return traitementAvantL(monBut)
+    return -1
 
 
 def chainageAvantP():

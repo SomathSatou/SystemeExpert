@@ -16,6 +16,8 @@ lu(La strategie d Ender);
 aime(Science-fiction);
 !lu(L Assasin royal);
 
+aime(Robin Hobb);
+
 Propose(titre,auteur) -> Livre(titre,auteur)&aime(auteur)&!lu(titre);
 Propose(titre,auteur) -> Livre(titre,auteur)&categorie(titre,genre)&aime(genre)&!lu(titre)&!pas(auteur);
 Propose(titre,auteur)&Propose(titre2,auteur) -> aime(auteur)&livre(titre,auteur)&livre(titre2,auteur)&!lu(titre)&!lu(titre2);

@@ -71,3 +71,20 @@ de lire "une seconde après"
 	Propose(Une seconde apres,William R Forstchen);
 
 	Attention la casse n'est pas gérée par notre parser.
+
+    6 - Le chainage avant 
+    Pour interroger la base de connaissances via le 
+chainage arrière il faut remplir le champ 
+"champ de saisie pour l'ajout à la base ou l'interroger"
+    Par exemple je veux savoir si j'aime la Science-fiction :
+
+    aime(Science-fiction);
+
+    si j'aime Orson Scott Card ( fait qui n'est pas dirrectement inscrit dans la base mais atteignable via les règles) :
+
+    aime(Orson Scott Card);
+
+    si j'aime Robin Hobb (ce qui n'est pas déduisable) :
+    
+    aime(Robin Hobb);
+    
